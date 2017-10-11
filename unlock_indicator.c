@@ -37,7 +37,7 @@ static struct ev_periodic *time_redraw_tick;
 extern bool debug_mode;
 
 /* The current position in the input buffer. Useful to determine if any
- * characters of the password have already been entered or not. 
+ * characters of the password have already been entered or not.
  */
 int input_position;
 
@@ -95,7 +95,7 @@ extern xcb_screen_t *screen;
 static xcb_visualtype_t *vistype;
 
 /* Maintain the current unlock/PAM state to draw the appropriate unlock
- * indicator. 
+ * indicator.
  */
 unlock_state_t unlock_state;
 pam_state_t pam_state;
@@ -123,10 +123,10 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     if (!vistype)
         vistype = get_root_visual_type(screen);
     bg_pixmap = create_bg_pixmap(conn, screen, resolution, color);
-    /* 
+    /*
      * Initialize cairo: Create one in-memory surface to render the unlock
      * indicator on, create one XCB surface to actually draw (one or more,
-     * depending on the amount of screens) unlock indicators on. 
+     * depending on the amount of screens) unlock indicators on.
      */
     cairo_surface_t *output = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, button_diameter_physical, button_diameter_physical);
     cairo_t *ctx = cairo_create(output);
@@ -197,16 +197,16 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
     if (unlock_indicator) {
         cairo_scale(ctx, scaling_factor(), scaling_factor());
         /* Draw a (centered) circle with transparent background. */
-        cairo_set_line_width(ctx, 3.0);
-        cairo_arc(ctx,
-                  BUTTON_CENTER /* x */,
-                  BUTTON_CENTER /* y */,
-                  BUTTON_RADIUS /* radius */,
-                  0 /* start */,
-                  2 * M_PI /* end */);
+        // cairo_set_line_width(ctx, 3.0);
+        // cairo_arc(ctx,
+        //           BUTTON_CENTER /* x */,
+        //           BUTTON_CENTER /* y */,
+        //           BUTTON_RADIUS /* radius */,
+        //           0 /* start */,
+        //           2 * M_PI /* end */);
 
         /* Use the appropriate color for the different PAM states
-         * (currently verifying, wrong password, or idle) 
+         * (currently verifying, wrong password, or idle)
          */
 
         void set_pam_color(char colortype) {
@@ -227,7 +227,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
                         set_color(ctx,wrongcolor,colortype);
                     }
                     else {
-                        set_color(ctx,idlecolor,colortype);  
+                        set_color(ctx,idlecolor,colortype);
                     }
                     break;
             }
@@ -267,65 +267,65 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 
         free(timetext);
 
-        if (pam_state == STATE_PAM_WRONG && (modifier_string != NULL)) {
-            cairo_text_extents_t extents;
-            double x, y;
+        // if (pam_state == STATE_PAM_WRONG && (modifier_string != NULL)) {
+        //     cairo_text_extents_t extents;
+        //     double x, y;
 
-            cairo_set_font_size(ctx, 14.0);
+        //     cairo_set_font_size(ctx, 14.0);
 
-            cairo_text_extents(ctx, modifier_string, &extents);
-            x = BUTTON_CENTER - ((extents.width / 2) + extents.x_bearing);
-            y = BUTTON_CENTER - ((extents.height / 2) + extents.y_bearing) + 28.0;
+        //     cairo_text_extents(ctx, modifier_string, &extents);
+        //     x = BUTTON_CENTER - ((extents.width / 2) + extents.x_bearing);
+        //     y = BUTTON_CENTER - ((extents.height / 2) + extents.y_bearing) + 28.0;
 
-            cairo_move_to(ctx, x, y);
-            cairo_show_text(ctx, modifier_string);
-            cairo_close_path(ctx);
-        }
+        //     cairo_move_to(ctx, x, y);
+        //     cairo_show_text(ctx, modifier_string);
+        //     cairo_close_path(ctx);
+        // }
 
         /* After the user pressed any valid key or the backspace key, we
          * highlight a random part of the unlock indicator to confirm this
          * keypress. */
-        if (unlock_state == STATE_KEY_ACTIVE ||
-            unlock_state == STATE_BACKSPACE_ACTIVE) {
-            cairo_set_line_width(ctx, 4);
-            cairo_new_sub_path(ctx);
-            double highlight_start = (rand() % (int)(2 * M_PI * 100)) / 100.0;
-            cairo_arc(ctx,
-                      BUTTON_CENTER /* x */,
-                      BUTTON_CENTER /* y */,
-                      BUTTON_RADIUS /* radius */,
-                      highlight_start,
-                      highlight_start + (M_PI / 2.5)); 
+        // if (unlock_state == STATE_KEY_ACTIVE ||
+        //     unlock_state == STATE_BACKSPACE_ACTIVE) {
+        //     cairo_set_line_width(ctx, 4);
+        //     cairo_new_sub_path(ctx);
+        //     double highlight_start = (rand() % (int)(2 * M_PI * 100)) / 100.0;
+        //     cairo_arc(ctx,
+        //               BUTTON_CENTER /* x */,
+        //               BUTTON_CENTER /* y */,
+        //               BUTTON_RADIUS /* radius */,
+        //               highlight_start,
+        //               highlight_start + (M_PI / 2.5));
 
-            /* Set newly drawn lines to erase what they're drawn over */
-            cairo_set_operator(ctx,CAIRO_OPERATOR_CLEAR); 
-            cairo_stroke(ctx);
+        //     /* Set newly drawn lines to erase what they're drawn over */
+        //     cairo_set_operator(ctx,CAIRO_OPERATOR_CLEAR);
+        //     cairo_stroke(ctx);
 
-            /* Back to normal operator */
-            cairo_set_operator(ctx,CAIRO_OPERATOR_OVER); 
-            cairo_set_line_width(ctx, 10);
+        //     /* Back to normal operator */
+        //     cairo_set_operator(ctx,CAIRO_OPERATOR_OVER);
+        //     cairo_set_line_width(ctx, 10);
 
-            /* Change color of separators based on backspace/active keypress */
-            set_pam_color('l');
+        //     /* Change color of separators based on backspace/active keypress */
+        //     set_pam_color('l');
 
-            /* Separator 1 */
-            cairo_arc(ctx,
-                BUTTON_CENTER /* x */,
-                BUTTON_CENTER /* y */,
-                BUTTON_RADIUS /* radius */,
-                highlight_start /* start */,
-                highlight_start + (M_PI / 128.0) /* end */);
-            cairo_stroke(ctx);
+        //     /* Separator 1 */
+        //     cairo_arc(ctx,
+        //         BUTTON_CENTER /* x */,
+        //         BUTTON_CENTER /* y */,
+        //         BUTTON_RADIUS /* radius */,
+        //         highlight_start /* start */,
+        //         highlight_start + (M_PI / 128.0) /* end */);
+        //     cairo_stroke(ctx);
 
-            /* Separator 2 */
-            cairo_arc(ctx,
-                BUTTON_CENTER /* x */,
-                BUTTON_CENTER /* y */,
-                BUTTON_RADIUS /* radius */,
-                highlight_start + (M_PI / 2.5) /* start */,
-                (highlight_start + (M_PI / 2.5)) + (M_PI / 128.0) /* end */);
-            cairo_stroke(ctx);
-        }
+        //     /* Separator 2 */
+        //     cairo_arc(ctx,
+        //         BUTTON_CENTER /* x */,
+        //         BUTTON_CENTER /* y */,
+        //         BUTTON_RADIUS /* radius */,
+        //         highlight_start + (M_PI / 2.5) /* start */,
+        //         (highlight_start + (M_PI / 2.5)) + (M_PI / 128.0) /* end */);
+        //     cairo_stroke(ctx);
+        // }
     }
 
     if (xr_screens > 0) {
